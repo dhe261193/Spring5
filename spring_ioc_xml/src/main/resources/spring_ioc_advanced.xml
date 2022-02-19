@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--控制bean的加载顺序 depends-on
+    <bean class="com.lazy.entity.User" id="user" depends-on="friend">
+        <property name="name" value="sky"/>
+        <property name="friends" ref="friend"/>
+    </bean>
+    <bean class="com.lazy.entity.Friend" name="friend">
+        <property name="name" value="cloud"/>
+    </bean>-->
+
+    <!--懒加载
+    <bean class="com.lazy.entity.Friend" id="lazy" lazy-init="true"/>-->
+
+    <!--scope 作用域
+        singleton 默认:单例  只会在Ioc容器种创建一次
+        prototype 多例（原型bean) 每次获取都会new一次新的bean
+
+    <bean class="com.lazy.entity.User" name="userS" scope="prototype"/>-->
+
+
+    <!--静态工厂实例化bean
+    <bean class="com.lazy.entity.User" name="userStatic" factory-method="createUserFactory"/>-->
+
+    <!--动态工厂实例化bean ,需要单独指定一个工厂bean
+    <bean class="com.lazy.service.UserService" id="userService"/>
+    <bean class="com.lazy.entity.User" id="userFactory" factory-bean="userService" factory-method="createUserInstance"/>-->
+
+    <!--自动注入 autowire-->
+    <!--ByType 根据类型去匹配，当出现多个相同类型的bean就报错
+        匹配多个可以使用 1，配置primary="true" 为主
+                        2. autowire-candidate="true" 排除
+
+    <bean class="com.lazy.entity.User" id="userType"  autowire="byType"/>
+    <bean class="com.lazy.entity.Friend" id="friend">
+        <property name="name" value="jj"/>
+    </bean>-->
+
+    <!--ByName 根据set方法的名字匹配
+    <bean class="com.lazy.entity.User" id="userName"  autowire="byName"/>
+    <bean class="com.lazy.entity.Friend" id="friends">
+        <property name="name" value="Kan"/>
+    </bean>-->
+
+    <!--constructor 根据构造函数匹配
+        优先根据参数名字去匹配，
+        匹配不到根据参数类型去匹配
+        会根据构造函数的参数完整匹配注入，如 User(friend, hobby),则IOC容器中必须有friend和hobby两个同时存在
+
+    <bean class="com.lazy.entity.User" id="userConstructor"  autowire="constructor"/>
+    <bean class="com.lazy.entity.Friend" id="friends" >
+        <property name="name" value="Kan"/>
+    </bean>-->
+
+    <!--生命周期回调
+    <bean class="com.lazy.entity.User" id="implUser"/>
+
+    <bean class="com.lazy.entity.User" id="userLife" init-method="initByConfig" destroy-method="destroyByConfig"/>-->
+
+
+    <!--配置第三方bean-->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" name="dataSource">
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${password}"/>
+        <property name="url" value="${url}"/>
+        <property name="driverClassName" value="${driverClassName}"/>
+    </bean>
+    <!--加载外部配置文件-->
+    <context:property-placeholder location="db.properties"/>
+
+</beans>

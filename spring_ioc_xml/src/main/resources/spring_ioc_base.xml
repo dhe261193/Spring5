@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:P="http://www.springframework.org/schema/p"
+       xmlns:C="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置bean别名-->
+    <alias name="user" alias="lazy"/>
+    <!--配置bean-->
+    <!--默认使用无参构造函数-->
+    <bean class="com.lazy.entity.User" id="user" />
+    <!--使用name设置别名，可以使用 空格 ， ；-->
+    <bean class="com.lazy.entity.User" id="user1" name="user2 user3,user4;user5"/>
+
+    <!--依赖注入-->
+    <!--基于setter方法依赖注入
+        1.属性必须声明了set方法
+        2.name是根据set方法的名字来的  setJob  -> job
+    -->
+    <bean class="com.lazy.entity.User" id="userSet">
+        <property name="id" value="1"/>
+        <property name="name" value="Davi"/>
+        <property name="job" value="doctor"/>
+    </bean>
+
+    <!--基于构造函数依赖注入
+        1.必须有对应的构造函数
+        2.name是根据构造函数的参数名来的，  比如：User(String idxx) -> name="idxx"
+        3.name属性可以省略 但是要注意参数的位置
+    -->
+    <bean class="com.lazy.entity.User" id="userCst">
+        <constructor-arg name="id" value="1"/>
+        <constructor-arg name="name" value="Lily"/>
+        <constructor-arg name="address" value="CHN"/>
+    </bean>
+
+
+    <!--复杂数据类型注入-->
+    <bean class="com.lazy.entity.User" id="userComplex">
+        <property name="name" value="Tian"/>
+        <!--设置null值-->
+        <property name="job">
+            <null/>
+        </property>
+        <property name="hobby">
+            <list>
+                <value>swimming</value>
+                <value>skiing</value>
+            </list>
+        </property>
+        <!--引用外部bean
+        <property name="friends" ref="friend"/>-->
+        <!--引用内部bean-->
+        <property name="friends">
+            <list>
+                <bean class="com.lazy.entity.Friend">
+                    <property name="name" value="Kai"/>
+                    <property name="gender" value="F"/>
+                </bean>
+                <bean class="com.lazy.entity.Friend">
+                    <property name="name" value="Xun"/>
+                    <property name="gender" value="M"/>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean class="com.lazy.entity.Friend" name="friend">
+        <property name="name" value="Xiang"/>
+        <property name="gender" value="M"/>
+    </bean>
+
+
+    <!--p命名空间 简化setter注入，不支持集合-->
+    <bean class="com.lazy.entity.User" id="userP" P:name="Bap" P:age="18" P:friends-ref="friend"/>
+
+    <!--C命名空间 简化基于构造函数的使用，不支持集合-->
+    <bean class="com.lazy.entity.User" id="userC" C:id="2" C:name="Cap" C:address="AHQ"/>
+
+
+</beans>
